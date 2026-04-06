@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openenv-conversation_repair"
+version = "0.1.0"
+description = "Context-Aware Conversation Repair System environment for OpenEnv"
+requires-python = ">=3.10"
+dependencies = [
+    # Core OpenEnv runtime (provides FastAPI server + HTTP client types)
+    # Install from PyPI or Git, depending on your deployment needs.
+    "openenv-core[core]>=0.2.2",
+    # Used by inference.py (HF router over OpenAI-compatible interface)
+    "openai>=1.0.0",
+    # Explicitly require Pydantic v2 for our Typed Pydantic models.
+    "pydantic>=2.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+# Server entry point - enables running via: uv run --project . server
+# or: python -m conversation_repair.server.app
+server = "conversation_repair.server.app:main"
+
+[tool.setuptools]
+include-package-data = true
+packages = ["conversation_repair", "conversation_repair.server"]
+package-dir = { "conversation_repair" = ".", "conversation_repair.server" = "server" }
