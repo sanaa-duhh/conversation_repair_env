@@ -34,6 +34,10 @@ from conversation_repair.tasks import list_task_ids
 MAX_STEPS = 6
 ENV_NAME = "conversation_repair"
 
+API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-7B-Instruct")
+HF_TOKEN = os.getenv("HF_TOKEN")
+
 
 def _require_env(name: str) -> str:
     v = os.environ.get(name, "").strip()
@@ -374,9 +378,11 @@ def run_episode(
 
 def main() -> int:
     try:
-        api_base = _require_env("API_BASE_URL")
-        hf_token = _require_env("HF_TOKEN")
-        model_name = _require_env("MODEL_NAME")
+        api_base = API_BASE_URL
+        hf_token = HF_TOKEN
+        model_name = MODEL_NAME
+        if not hf_token:
+            raise RuntimeError("Missing required environment variable: HF_TOKEN")
     except Exception as e:
         print("[END] success=false steps=0 score=0.00 rewards=")
         traceback.print_exception(type(e), e, e.__traceback__, file=sys.stderr)
