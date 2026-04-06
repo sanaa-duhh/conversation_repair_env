@@ -1,6 +1,6 @@
 openai
-openenv
-pydantic
+git+https://github.com/meta-pytorch/openenv.git
+pydantic>=1.10
 fastapi
-uvicorn
+uvicorn[standard]
 requests
