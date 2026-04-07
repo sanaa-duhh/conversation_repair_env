@@ -347,10 +347,24 @@ def run_episode(
         step_reward = 0.0
         step_done = obs.done
         step_err: str | None = None
+        llm_action: ConversationRepairAction | None = None
         try:
-            action = _llm_decide_action(
-                client, model_name, task_id, step_n, obs, env, prev_summaries
-            )
+            try:
+                llm_action = _llm_decide_action(
+                    client, model_name, task_id, step_n, obs, env, prev_summaries
+                )
+                step_err = None
+            except Exception as e:
+                llm_action = None
+                step_err = str(e)
+
+            if llm_action is None:
+                rewards.append(0.0)
+                steps_taken = step_n
+                _print_step(step_n, "none", step_reward, False, step_err)
+                break
+
+            action = llm_action
             action_str = _compact_action_log(action)
             obs = env.step(action)
             step_reward = float(obs.reward) if obs.reward is not None else 0.0
