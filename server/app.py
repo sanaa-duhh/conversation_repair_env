@@ -4,6 +4,13 @@ FastAPI application for the `conversation_repair` environment.
 This module exposes HTTP + WebSocket endpoints compatible with OpenEnv EnvClient.
 """
 
+import sys
+import os
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 try:
     from openenv.core.env_server.http_server import create_app
 except Exception as e:  # pragma: no cover
@@ -12,14 +19,8 @@ except Exception as e:  # pragma: no cover
         "'uv sync' (or your equivalent) in the environment root."
     ) from e
 
-try:
-    # Normal case (when imported as module)
-    from conversation_repair.models import ConversationRepairAction, ConversationRepairObservation
-    from conversation_repair.server.conversation_repair_environment import ConversationRepairEnvironment
-except Exception:
-    # Fallback (when run as script: python server/app.py)
-    from models import ConversationRepairAction, ConversationRepairObservation
-    from conversation_repair_environment import ConversationRepairEnvironment
+from conversation_repair.models import ConversationRepairAction, ConversationRepairObservation
+from conversation_repair.server.conversation_repair_environment import ConversationRepairEnvironment
 
 
 app = create_app(
@@ -42,19 +43,14 @@ def health():
     return {"status": "healthy"}
 
 
-# ✅ Main function must be callable
 def main(host: str = "0.0.0.0", port: int = 8000):
-    """Entry point for direct execution via `python server/app.py`."""
     import uvicorn
     uvicorn.run(app, host=host, port=port)
 
 
-# ✅ REQUIRED for evaluator
 if __name__ == "__main__":
     import argparse
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
-
     main(port=args.port)
