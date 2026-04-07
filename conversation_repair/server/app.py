@@ -29,6 +29,16 @@ app = create_app(
 )
 
 
+@app.get("/")
+def root():
+    return {"status": "ok", "env": "conversation_repair"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
+
 def main(host: str = "0.0.0.0", port: int = 8000):
     """Entry point for direct execution via `uv run` or `python -m`."""
     import uvicorn
