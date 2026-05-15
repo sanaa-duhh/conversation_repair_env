@@ -230,7 +230,9 @@ def _forced_action_type(
         return ConversationRepairActionType.ALIGN
 
     if not has_conflicts and n_extract >= 1 and n_align >= 1:
-        return ConversationRepairActionType.RESOLVE
+        if n_extract >= 2:
+            return ConversationRepairActionType.RESOLVE
+        return ConversationRepairActionType.EXTRACT
 
     if not has_conflicts and n_extract >= 1 and n_align == 0:
         return ConversationRepairActionType.ALIGN
