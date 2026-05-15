@@ -33,8 +33,8 @@ T_RES_FACT_MEAN = 0.18
 T_RES_FACT_COHERENCE = 0.12
 
 # Weight: word-level vs character bigram channel.
-_W_WORD = 0.58
-_W_CHAR = 0.42
+_W_WORD = 0.42
+_W_CHAR = 0.58
 
 _STOPWORDS: frozenset[str] = frozenset(
     """
